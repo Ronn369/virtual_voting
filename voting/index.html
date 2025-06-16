@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote For Good</title>
+    <style>
+        /* Reset Default Margin & Padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Background Image */
+        body {
+            background-image: url('bg.jpg'); /* Replace with your image */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: rgba(0, 123, 255, 0.8); /* Transparent blue */
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            display: inline;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+            display: block;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .navbar ul li a:hover {
+            color: #f0f0f0;
+            transform: translateY(-3px);
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        header h1 {
+            font-size: 48px;
+            color: white;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        /* Image Container */
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px auto;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            padding: 0 20px;
+        }
+
+        .box {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 12px;
+            width: 180px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .box img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: transform 0.3s;
+        }
+
+        .box p {
+            font-weight: bold;
+            color: #007bff;
+            margin-top: 10px;
+            transition: color 0.3s;
+        }
+
+        .box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .box:hover img {
+            transform: scale(1.05);
+        }
+
+        .box:hover p {
+            color: #0056b3;
+        }
+
+        /* Verification Form */
+        .form-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+
+        .form-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 350px;
+            border-radius: 15px;
+            z-index: 1001;
+        }
+
+        .form-container h2 {
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+
+        .form-container input {
+            padding: 12px;
+            margin: 10px 0;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-container button {
+            padding: 12px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+
+        .form-container button:hover {
+            background: #0056b3;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 22px;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        /* EVM Machine Styles */
+        .evm-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #f0f0f0;
+            padding: 30px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 600px;
+            border-radius: 15px;
+            z-index: 1001;
+            border: 8px solid #333;
+        }
+
+        .evm-header {
+            text-align: center;
+            margin-bottom: 20px;
+            background: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .candidate-row {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .candidate-button {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ccc;
+            margin-right: 15px;
+            cursor: pointer;
+            border: 2px solid #999;
+            transition: all 0.2s;
+        }
+
+        .candidate-button:hover {
+            background: #ddd;
+        }
+
+        .candidate-button.selected {
+            background: #007bff;
+            border-color: #0056b3;
+        }
+
+        .candidate-id {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .candidate-name {
+            flex-grow: 1;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .evm-footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .vote-btn {
+            padding: 12px 30px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .cancel-btn {
+            padding: 12px 30px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .vote-btn:hover {
+            background: #218838;
+        }
+
+        .cancel-btn:hover {
+            background: #c82333;
+        }
+
+        .confirmation-message {
+            display: none;
+            padding: 20px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+        </ul>
+    </nav>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Vote For Good</h1>
+    </header>
+
+    <!-- Image Container -->
+    <div class="container">
+        <div class="box" onclick="openForm('Aadhar Verification')">
+            <img src="aadhar_box.jpg" alt="Aadhar Verification">
+            <p>Aadhar Verification</p>
+        </div>
+        <div class="box" onclick="openEVM()">
+            <img src="ballot_box.jpg" alt="Ballot Box">
+            <p>Ballot Box</p>
+        </div>
+        <div class="box" onclick="openForm('Biometric Verification')">
+            <img src="biometric_box.jpg" alt="Biometric Verification">
+            <p>Biometric Verification</p>
+        </div>
+        <div class="box" onclick="openForm('Other Card Verification')">
+            <img src="others.jpg" alt="Other Card">
+            <p>Other Card Verification</p>
+        </div>
+    </div>
+
+    <!-- Form Overlay -->
+    <div id="form-overlay" class="form-overlay"></div>
+
+    <!-- Verification Form -->
+    <div id="verification-form" class="form-container">
+        <span class="close-btn" onclick="closeForm()">&times;</span>
+        <h2 id="form-title"></h2>
+        <input type="text" placeholder="Full Name" required>
+        <input type="text" id="verification-number" placeholder="Enter Verification Number" required>
+        <input type="text" placeholder="Mobile Number" required>
+        <button onclick="submitForm()">Submit</button>
+    </div>
+
+    <!-- EVM Machine Interface -->
+    <div id="evm-machine" class="evm-container">
+        <span class="close-btn" onclick="closeEVM()">&times;</span>
+        <div class="evm-header">
+            <h2>Electronic Voting Machine</h2>
+            <p>Select your candidate and press the Vote button</p>
+        </div>
+        
+        <div id="candidates-list">
+            <!-- Candidate rows will be generated by JavaScript -->
+        </div>
+        
+        <div id="vote-confirmation" class="confirmation-message">
+            Your vote has been successfully recorded. Thank you for voting!
+        </div>
+        
+        <div class="evm-footer">
+            <button class="cancel-btn" onclick="closeEVM()">Cancel</button>
+            <button class="vote-btn" onclick="castVote()">Vote</button>
+        </div>
+    </div>
+
+    <script>
+        // Candidate data
+        const candidates = [
+            { id: "A", name: "narendra modi" },
+            { id: "B", name: "Priya Sharma" },
+            { id: "C", name: "Amit Singh" },
+            { id: "D", name: "Sunita Patel" },
+            { id: "E", name: "Vikram Mehta" },
+            { id: "F", name: "Neha Gupta" },
+            { id: "G", name: "Sanjay Verma" },
+            { id: "H", name: "Ananya Reddy" },
+            { id: "I", name: "Mohit Kapoor" },
+            { id: "J", name: "Deepika Malhotra" }
+        ];
+
+        // Generate candidate list
+        function generateCandidatesList() {
+            const candidatesList = document.getElementById('candidates-list');
+            candidatesList.innerHTML = '';
+            
+            candidates.forEach(candidate => {
+                const row = document.createElement('div');
+                row.className = 'candidate-row';
+                
+                const button = document.createElement('div');
+                button.className = 'candidate-button';
+                button.setAttribute('data-id', candidate.id);
+                button.onclick = function() { selectCandidate(candidate.id) };
+                
+                const id = document.createElement('div');
+                id.className = 'candidate-id';
+                id.textContent = candidate.id;
+                
+                const name = document.createElement('div');
+                name.className = 'candidate-name';
+                name.textContent = candidate.name;
+                
+                row.appendChild(id);
+                row.appendChild(name);
+                row.appendChild(button);
+                
+                candidatesList.appendChild(row);
+            });
+        }
+
+        // Variable to store selected candidate
+        let selectedCandidate = null;
+        
+        // Select candidate function
+        function selectCandidate(id) {
+            // Clear previous selection
+            const buttons = document.querySelectorAll('.candidate-button');
+            buttons.forEach(button => button.classList.remove('selected'));
+            
+            // Select new candidate
+            const selectedButton = document.querySelector(`.candidate-button[data-id="${id}"]`);
+            selectedButton.classList.add('selected');
+            
+            selectedCandidate = id;
+        }
+        
+        // Cast vote function
+        function castVote() {
+            if (selectedCandidate) {
+                // Hide candidate list
+                document.getElementById('candidates-list').style.display = 'none';
+                
+                // Show confirmation message
+                document.getElementById('vote-confirmation').style.display = 'block';
+                
+                // Disable vote button
+                document.querySelector('.vote-btn').disabled = true;
+                document.querySelector('.vote-btn').style.opacity = '0.5';
+                
+                // Change cancel button to close
+                const cancelBtn = document.querySelector('.cancel-btn');
+                cancelBtn.textContent = 'Close';
+                cancelBtn.style.background = '#6c757d';
+                
+                // You would typically send the vote to a server here
+                console.log(`Vote cast for candidate ${selectedCandidate}`);
+            } else {
+                alert('Please select a candidate before voting.');
+            }
+        }
+
+        function openForm(title) {
+            document.getElementById('form-title').innerText = title;
+            document.getElementById('verification-form').style.display = 'block';
+            document.getElementById('form-overlay').style.display = 'block';
+            
+            // Set placeholder based on verification type
+            const numberField = document.getElementById('verification-number');
+            
+            if (title === 'Aadhar Verification') {
+                numberField.placeholder = 'Enter Aadhar Number';
+            } else if (title === 'Biometric Verification') {
+                numberField.placeholder = 'Enter Biometric ID';
+            } else {
+                numberField.placeholder = 'Enter Verification Number';
+            }
+        }
+
+        function closeForm() {
+            document.getElementById('verification-form').style.display = 'none';
+            document.getElementById('form-overlay').style.display = 'none';
+        }
+        
+        function openEVM() {
+            // Reset EVM state
+            document.getElementById('candidates-list').style.display = 'block';
+            document.getElementById('vote-confirmation').style.display = 'none';
+            document.querySelector('.vote-btn').disabled = false;
+            document.querySelector('.vote-btn').style.opacity = '1';
+            
+            const cancelBtn = document.querySelector('.cancel-btn');
+            cancelBtn.textContent = 'Cancel';
+            cancelBtn.style.background = '#dc3545';
+            
+            // Clear previous selection
+            selectedCandidate = null;
+            const buttons = document.querySelectorAll('.candidate-button');
+            buttons.forEach(button => button.classList.remove('selected'));
+            
+            // Generate candidates list
+            generateCandidatesList();
+            
+            // Show EVM and overlay
+            document.getElementById('evm-machine').style.display = 'block';
+            document.getElementById('form-overlay').style.display = 'block';
+        }
+        
+        function closeEVM() {
+            document.getElementById('evm-machine').style.display = 'none';
+            document.getElementById('form-overlay').style.display = 'none';
+        }
+        
+        function submitForm() {
+            // Here you would handle form submission
+            // For now, just close the form
+            alert('Form submitted successfully!');
+            closeForm();
+        }
+        
+        // Close form when clicking outside
+        document.getElementById('form-overlay').addEventListener('click', function(e) {
+            if (e.target === document.getElementById('form-overlay')) {
+                closeForm();
+                closeEVM();
+            }
+        });
+        
+        // Initialize candidate list
+        generateCandidatesList();
+    </script>
+</body>
+</html>
